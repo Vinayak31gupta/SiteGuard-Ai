@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}SiteGuard AI – Safety Compliance Detection{% endblock %}</title>
+    <meta name="description" content="SiteGuard AI - Real-Time PPE and Construction Site Safety Compliance Detection System powered by YOLOv8.">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+    <!-- Simple Professional Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-brand">
+            <div class="brand-icon">
+                <svg viewBox="0 0 24 24">
+                    <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/>
+                </svg>
+            </div>
+            <div>
+                <div class="brand-title">SiteGuard AI</div>
+                <div class="brand-sub">Safety Compliance</div>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="{{ url_for('index') }}" class="nav-link {% if active_page == 'dashboard' %}active{% endif %}" id="nav-dashboard">
+                <span class="nav-icon">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="3" width="7" height="7"></rect>
+                        <rect x="14" y="3" width="7" height="7"></rect>
+                        <rect x="14" y="14" width="7" height="7"></rect>
+                        <rect x="3" y="14" width="7" height="7"></rect>
+                    </svg>
+                </span>
+                Dashboard
+            </a>
+
+            <a href="{{ url_for('live_detection') }}" class="nav-link {% if active_page == 'live' %}active{% endif %}" id="nav-live">
+                <span class="nav-icon">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M23 7l-7 5 7 5V7z"></path>
+                        <rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect>
+                    </svg>
+                </span>
+                Live Detection
+            </a>
+
+            <a href="{{ url_for('upload_video') }}" class="nav-link {% if active_page == 'upload' %}active{% endif %}" id="nav-upload">
+                <span class="nav-icon">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="17 8 12 3 7 8"></polyline>
+                        <line x1="12" y1="3" x2="12" y2="15"></line>
+                    </svg>
+                </span>
+                Upload Video
+            </a>
+
+            <a href="{{ url_for('image_detection') }}" class="nav-link {% if active_page == 'image' %}active{% endif %}" id="nav-image">
+                <span class="nav-icon">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                        <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                        <polyline points="21 15 16 10 5 21"></polyline>
+                    </svg>
+                </span>
+                Upload Image
+            </a>
+
+            <a href="{{ url_for('violation_history') }}" class="nav-link {% if active_page == 'history' %}active{% endif %}" id="nav-history">
+                <span class="nav-icon">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12 6 12 12 16 14"></polyline>
+                    </svg>
+                </span>
+                Violation History
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <div>Model: <strong>YOLOv8-Nano</strong></div>
+            <div style="margin-top: 4px;">Dataset: Roboflow CSS v30</div>
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+        <header class="page-header">
+            <div>
+                <h1 class="page-title">{% block page_title %}Dashboard{% endblock %}</h1>
+                <div class="page-subtitle">{% block page_subtitle %}Real-time PPE compliance monitoring & safety detection{% endblock %}</div>
+            </div>
+            <div class="hardware-pill">
+                <span class="hardware-dot"></span>
+                <span>AI Engine: Active</span>
+            </div>
+        </header>
+
+        {% block content %}{% endblock %}
+    </main>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    {% block extra_scripts %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,34 @@
+
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Virtual environments
+venv/
+.venv/
+
+# Datasets
+dataset/
+dataset_ppe/
+
+# Training outputs
+runs/
+outputs/
+
+# Temporary uploads
+uploads/*
+!uploads/.gitkeep
+
+# Database
+instance/
+database/
+
+# Secrets
+.env
+
+# IDE
+.vscode/
+.idea/
+
+# Training checkpoints
+models/last.pt

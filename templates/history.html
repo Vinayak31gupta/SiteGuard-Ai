@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block title %}SiteGuard AI – Violation History{% endblock %}
+{% block page_title %}Safety Violation History{% endblock %}
+{% block page_subtitle %}Comprehensive audit log of detected non-compliant events and missing safety equipment{% endblock %}
+
+{% block content %}
+<div class="table-panel">
+    <div class="panel-header">
+        <div class="panel-title">All Recorded Safety Violations</div>
+        <div>
+            <form action="{{ url_for('clear_history_action') }}" method="POST" style="margin: 0; display: inline-block;">
+                <button type="submit" class="btn btn-danger" id="btn-clear-history" style="padding: 6px 14px; font-size: 0.82rem;">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="3 6 5 6 21 6"></polyline>
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                    </svg>
+                    Clear History
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table class="custom-table" id="all-violations-table">
+            <thead>
+                <tr>
+                    <th>Violation ID</th>
+                    <th>Date & Time</th>
+                    <th>Worker ID</th>
+                    <th>Missing PPE</th>
+                    <th>Confidence</th>
+                    <th>Source</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if violations %}
+                    {% for v in violations %}
+                    <tr>
+                        <td>#{{ v.id }}</td>
+                        <td>{{ v.timestamp }}</td>
+                        <td>Worker {{ v.worker_id }}</td>
+                        <td>
+                            <strong style="color: var(--danger)">{{ v.missing_ppe }}</strong>
+                        </td>
+                        <td>{{ "%.0f"|format(v.confidence * 100) }}%</td>
+                        <td>
+                            <span style="font-size: 0.8rem; text-transform: uppercase; color: var(--text-dim);">{{ v.source_type }}</span>
+                        </td>
+                        <td>
+                            <span class="badge badge-non-compliant">{{ v.status }}</span>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="7" style="text-align: center; color: var(--text-dim); padding: 40px;">
+                            No safety violations logged. The site is currently 100% compliant!
+                        </td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

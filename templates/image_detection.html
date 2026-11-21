@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+
+{% block title %}SiteGuard AI – Image Safety Analysis{% endblock %}
+{% block page_title %}Image Safety & PPE Analysis{% endblock %}
+{% block page_subtitle %}Upload a construction site photograph to instantly detect workers, PPE gear, and safety compliance infractions{% endblock %}
+
+{% block content %}
+<div class="video-panel">
+    <div class="panel-header">
+        <div class="panel-title">Upload Site Photograph</div>
+        <div style="font-size: 0.82rem; color: var(--text-dim);">Supported formats: JPG, JPEG, PNG, WEBP, BMP</div>
+    </div>
+
+    <form id="upload-image-form">
+        <div class="dropzone" id="upload-image-dropzone">
+            <svg class="dropzone-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                <polyline points="21 15 16 10 5 21"></polyline>
+            </svg>
+            <div style="font-size: 1rem; font-weight: 600; margin-bottom: 6px;">Drag and drop image here, or click to browse</div>
+            <div style="font-size: 0.82rem; color: var(--text-dim);" id="selected-image-filename">Select a construction site photo (e.g. JPG, PNG)</div>
+            <input type="file" id="image-file-input" name="image" accept=".jpg,.jpeg,.png,.webp,.bmp" style="display: none;">
+        </div>
+
+        <!-- Preview thumbnail before processing -->
+        <div id="image-client-preview-container" style="display: none; text-align: center; margin-bottom: 16px;">
+            <img id="image-client-preview" src="" alt="Selected Preview" style="max-height: 220px; border-radius: var(--radius-md); border: 1px solid var(--border-subtle); box-shadow: var(--shadow-card);">
+        </div>
+
+        <div id="image-status-text" style="font-size: 0.88rem; color: var(--primary); margin-bottom: 15px; font-weight: 500;"></div>
+
+        <button type="submit" class="btn btn-primary" id="btn-process-image" disabled>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            Analyze Image with AI
+        </button>
+    </form>
+</div>
+
+<!-- Processed Image Results Panel -->
+<div class="video-panel" id="image-results-panel" style="display: none;">
+    <div class="panel-header">
+        <div class="panel-title">AI Safety Analysis Results</div>
+        <a id="btn-download-image" href="#" download class="btn btn-secondary" style="padding: 6px 14px; font-size: 0.82rem;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            Download Annotated Image
+        </a>
+    </div>
+
+    <!-- Summary KPI mini-cards -->
+    <div class="metrics-grid" style="margin-bottom: 20px;">
+        <div class="metric-card workers">
+            <div class="metric-info">
+                <h3>Workers</h3>
+                <div class="metric-number" id="img-stat-workers">0</div>
+            </div>
+            <div class="metric-icon-box icon-workers">👷</div>
+        </div>
+
+        <div class="metric-card compliant">
+            <div class="metric-info">
+                <h3>Compliant</h3>
+                <div class="metric-number" id="img-stat-compliant">0</div>
+            </div>
+            <div class="metric-icon-box icon-compliant">✓</div>
+        </div>
+
+        <div class="metric-card violations">
+            <div class="metric-info">
+                <h3>Violations</h3>
+                <div class="metric-number" id="img-stat-violations">0</div>
+            </div>
+            <div class="metric-icon-box icon-violations">⚠</div>
+        </div>
+
+        <div class="metric-card fps">
+            <div class="metric-info">
+                <h3>Status</h3>
+                <div class="metric-number" id="img-stat-status" style="font-size: 1.15rem; margin-top: 6px;">COMPLIANT</div>
+            </div>
+            <div class="metric-icon-box icon-fps">🛡</div>
+        </div>
+    </div>
+
+    <!-- Annotated Image Display -->
+    <div class="video-container" style="min-height: 480px; padding: 10px;">
+        <img id="processed-image-result" src="" alt="Annotated Safety Analysis" class="video-feed" style="border-radius: var(--radius-sm);">
+    </div>
+
+    <!-- Worker breakdown details -->
+    <div id="image-worker-breakdown" style="margin-top: 20px;"></div>
+</div>
+{% endblock %}

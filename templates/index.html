@@ -1,0 +1,165 @@
+{% extends "base.html" %}
+
+{% block title %}SiteGuard AI – Dashboard{% endblock %}
+{% block page_title %}Safety Compliance Dashboard{% endblock %}
+{% block page_subtitle %}Overview of workers, safety compliance status, and detected PPE violations{% endblock %}
+
+{% block content %}
+<!-- Four Summary KPI Cards -->
+<section class="metrics-grid">
+    <div class="metric-card workers">
+        <div class="metric-info">
+            <h3>Workers Detected</h3>
+            <div class="metric-number" id="metric-workers">{{ stats.workers_detected }}</div>
+        </div>
+        <div class="metric-icon-box icon-workers">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+            </svg>
+        </div>
+    </div>
+
+    <div class="metric-card compliant">
+        <div class="metric-info">
+            <h3>Compliant Workers</h3>
+            <div class="metric-number" id="metric-compliant">{{ stats.compliant_workers }}</div>
+        </div>
+        <div class="metric-icon-box icon-compliant">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+            </svg>
+        </div>
+    </div>
+
+    <div class="metric-card violations">
+        <div class="metric-info">
+            <h3>PPE Violations</h3>
+            <div class="metric-number" id="metric-violations">{{ stats.ppe_violations }}</div>
+        </div>
+        <div class="metric-icon-box icon-violations">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                <line x1="12" y1="9" x2="12" y2="13"></line>
+                <line x1="12" y1="17" x2="12.01" y2="17"></line>
+            </svg>
+        </div>
+    </div>
+
+    <div class="metric-card fps">
+        <div class="metric-info">
+            <h3>Current FPS</h3>
+            <div class="metric-number" id="metric-fps">{{ stats.current_fps }}</div>
+        </div>
+        <div class="metric-icon-box icon-fps">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+            </svg>
+        </div>
+    </div>
+</section>
+
+<!-- Action Buttons Toolbar -->
+<div class="action-toolbar">
+    <button class="btn btn-primary" id="btn-start-camera">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M23 7l-7 5 7 5V7z"></path>
+            <rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect>
+        </svg>
+        Start Camera
+    </button>
+
+    <button class="btn btn-danger" id="btn-stop-camera" style="display: none;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="6" y="6" width="12" height="12"></rect>
+        </svg>
+        Stop Camera
+    </button>
+
+    <a href="{{ url_for('upload_video') }}" class="btn btn-secondary" id="btn-upload-video-nav">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="17 8 12 3 7 8"></polyline>
+            <line x1="12" y1="3" x2="12" y2="15"></line>
+        </svg>
+        Upload Video
+    </a>
+
+    <a href="{{ url_for('image_detection') }}" class="btn btn-secondary" id="btn-upload-image-nav">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+            <circle cx="8.5" cy="8.5" r="1.5"></circle>
+            <polyline points="21 15 16 10 5 21"></polyline>
+        </svg>
+        Upload Image
+    </a>
+</div>
+
+<!-- Live Detection Preview Panel -->
+<div class="video-panel">
+    <div class="panel-header">
+        <div class="panel-title">Live Detection Preview</div>
+        <div style="font-size: 0.82rem; color: var(--text-dim);">Real-Time Inference Feed</div>
+    </div>
+    <div class="video-container" id="dashboard-video-container">
+        <img id="webcam-stream" class="video-feed" src="" alt="Webcam Feed" style="display: none;">
+        <div class="video-placeholder" id="webcam-placeholder">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M23 7l-7 5 7 5V7z"></path>
+                <rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect>
+            </svg>
+            <div style="font-size: 1rem; font-weight: 500; color: var(--text-main); margin-bottom: 6px;">Camera is Currently Inactive</div>
+            <div style="font-size: 0.85rem; max-width: 360px;">Click the <strong>Start Camera</strong> button above to start real-time PPE detection via your webcam.</div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Violations Table -->
+<div class="table-panel">
+    <div class="panel-header">
+        <div class="panel-title">Recent Safety Violations</div>
+        <a href="{{ url_for('violation_history') }}" style="color: var(--primary); font-size: 0.85rem; text-decoration: none;">View All History &rarr;</a>
+    </div>
+    <div class="table-responsive">
+        <table class="custom-table" id="recent-violations-table">
+            <thead>
+                <tr>
+                    <th>Violation ID</th>
+                    <th>Date & Time</th>
+                    <th>Worker ID</th>
+                    <th>Missing PPE</th>
+                    <th>Confidence</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if recent_violations %}
+                    {% for v in recent_violations %}
+                    <tr>
+                        <td>#{{ v.id }}</td>
+                        <td>{{ v.timestamp }}</td>
+                        <td>Worker {{ v.worker_id }}</td>
+                        <td>
+                            <strong style="color: var(--danger)">{{ v.missing_ppe }}</strong>
+                        </td>
+                        <td>{{ "%.0f"|format(v.confidence * 100) }}%</td>
+                        <td>
+                            <span class="badge badge-non-compliant">NON-COMPLIANT</span>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="6" style="text-align: center; color: var(--text-dim); padding: 30px;">
+                            No safety violations recorded yet. Active monitoring will automatically log infractions.
+                        </td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

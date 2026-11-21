@@ -1,0 +1,22 @@
+
+======================================================================
+               SITEGUARD AI - BENCHMARK RESULTS
+======================================================================
+Hardware Tested         : Intel64 Family 6 Model 191 Stepping 2, GenuineIntel
+Target Device           : cpu
+Model Evaluated         : best.pt
+Input Dimensions        : 640 x 640
+Frames Processed        : 50
+Confidence Threshold    : 0.35
+NMS IoU Threshold       : 0.45
+----------------------------------------------------------------------
+Average Inference Latency : 47.94 ms (+/- 2.05 ms)
+Pure Inference FPS        : 20.9 FPS
+Total Processing Time     : 2.397 s
+Total Application FPS     : 20.9 FPS
+======================================================================
+[DISTINCTION NOTE]
+  - Inference FPS measures only model forward-pass and NMS post-processing.
+  - Total Application FPS includes frame preparation, memory transfer,
+    compliance verification, and overhead.
+======================================================================

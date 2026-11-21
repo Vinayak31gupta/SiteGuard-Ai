@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+
+{% block title %}SiteGuard AI – Upload Video{% endblock %}
+{% block page_title %}Upload & Analyze Video{% endblock %}
+{% block page_subtitle %}Process site inspection videos with YOLOv8 inference and export annotated safety footage{% endblock %}
+
+{% block content %}
+<div class="video-panel">
+    <div class="panel-header">
+        <div class="panel-title">Upload Video Footage</div>
+        <div style="font-size: 0.82rem; color: var(--text-dim);">Supported formats: MP4, AVI, MOV (Max 200MB)</div>
+    </div>
+
+    <form id="upload-video-form">
+        <div class="dropzone" id="upload-dropzone">
+            <svg class="dropzone-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="17 8 12 3 7 8"></polyline>
+                <line x1="12" y1="3" x2="12" y2="15"></line>
+            </svg>
+            <div style="font-size: 1rem; font-weight: 600; margin-bottom: 6px;">Drag and drop video here, or click to browse</div>
+            <div style="font-size: 0.82rem; color: var(--text-dim);" id="selected-filename">Select an MP4, AVI, or MOV construction site video</div>
+            <input type="file" id="video-file-input" name="video" accept=".mp4,.avi,.mov,.m4v,.mkv" style="display: none;">
+        </div>
+
+        <div class="progress-bar-container" id="upload-progress-container">
+            <div class="progress-bar-fill" id="upload-progress-bar"></div>
+        </div>
+
+        <div id="processing-status-text" style="font-size: 0.88rem; color: var(--primary); margin-bottom: 15px; font-weight: 500;"></div>
+
+        <button type="submit" class="btn btn-primary" id="btn-process-video" disabled>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polygon points="5 3 19 12 5 21 5 3"></polygon>
+            </svg>
+            Process Video with AI
+        </button>
+    </form>
+</div>
+
+<!-- Processed Video Results Panel -->
+<div class="video-panel" id="upload-results-panel" style="display: none;">
+    <div class="panel-header">
+        <div class="panel-title">Processed Safety Detection Results</div>
+        <a id="btn-download-video" href="#" download class="btn btn-secondary" style="padding: 6px 14px; font-size: 0.82rem;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            Download Processed Video
+        </a>
+    </div>
+
+    <div class="video-container" style="min-height: 400px;">
+        <video id="processed-video-player" class="video-feed" controls playsinline>
+            Your browser does not support HTML5 video streaming.
+        </video>
+    </div>
+
+    <div id="processed-stats"></div>
+</div>
+
+<!-- Video Processing History Table -->
+<div class="table-panel" style="margin-top: 24px;">
+    <div class="panel-header">
+        <div class="panel-title">Recent Video Jobs</div>
+    </div>
+    <div class="table-responsive">
+        <table class="custom-table">
+            <thead>
+                <tr>
+                    <th>Job ID</th>
+                    <th>File Name</th>
+                    <th>Total Frames</th>
+                    <th>FPS</th>
+                    <th>Workers</th>
+                    <th>Violations</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if video_history %}
+                    {% for j in video_history %}
+                    <tr>
+                        <td>#{{ j.id }}</td>
+                        <td>{{ j.original_filename }}</td>
+                        <td>{{ j.total_frames }}</td>
+                        <td>{{ j.processed_fps }}</td>
+                        <td>{{ j.workers_detected }}</td>
+                        <td>
+                            <strong style="color: var(--danger)">{{ j.violations_detected }}</strong>
+                        </td>
+                        <td>{{ j.created_at }}</td>
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="7" style="text-align: center; color: var(--text-dim); padding: 25px;">
+                            No video inspection jobs processed yet.
+                        </td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

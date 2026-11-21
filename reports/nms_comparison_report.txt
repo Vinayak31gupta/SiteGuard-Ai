@@ -1,0 +1,14 @@
+SITEGUARD AI - NMS IoU EXPERIMENTAL REPORT
+===========================================================================
+ NMS IoU |  Precision |   Recall |   mAP@0.5 |  mAP@.5:.95 |  Inf(ms) |      FPS
+---------------------------------------------------------------------------
+    0.30 |      0.504 |    0.321 |     0.283 |       0.189 |    35.51 |     27.8
+    0.45 |      0.498 |    0.325 |     0.286 |       0.190 |    36.06 |     27.4
+    0.60 |      0.482 |    0.327 |     0.284 |       0.189 |    38.67 |     25.4
+    0.70 |      0.466 |    0.329 |     0.283 |       0.193 |    37.58 |     26.0
+
+[ANALYSIS & FINDINGS]
+- Lower NMS IoU (0.30): Aggressive suppression removes redundant boxes, but risks suppressing adjacent workers or small PPE items located near worker boundaries.
+- Standard NMS IoU (0.45): Optimal sweet spot balancing high recall with minimal false-positive duplicates. (Recommended default for SiteGuard AI).
+- Higher NMS IoU (0.60 - 0.70): Retains overlapping detections, which can be useful in dense crowds but may yield duplicate boxes for single workers.
+
